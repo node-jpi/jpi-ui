@@ -1,0 +1,6 @@
+#!/bin/bash
+
+mkdir -p server/public/build/js
+browserify client/main.js -t [ babelify --presets [ es2015 react ] ] -d | exorcist server/public/build/js/app.js.map > server/public/build/js/app.js
+
+#-x react -x react-dom -x react-tap-event-plugin -x material-ui -t 

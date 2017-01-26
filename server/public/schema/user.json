@@ -1,0 +1,132 @@
+{
+  "id": "user",
+  "type": "object",
+  "title": "User API Hyperschema",
+  "description": "User API description",
+  "definitions": {
+    "orderBy": {
+      "type": "string",
+      "description": "Order by query",
+      "example": "price",
+      "enum": ["price", "distance", "postage"]
+    }
+  },
+  "links": [
+    {
+      "description": "List users",
+      "href": "/user",
+      "method": "GET",
+      "rel": "instances",
+      "title": "List",
+      "targetSchema": {
+        "items": {
+          "$ref": "#"
+        },
+        "type": "array"
+      },
+      "config": {
+        "path": "user[find]"
+      }
+    },
+    {
+      "title": "Create",
+      "description": "Create a new user",
+      "href": "/user",
+      "method": "POST",
+      "rel": "create",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": { "$ref": "#/properties/name" },
+          "age": { "$ref": "#/properties/age" }
+        },
+        "required": ["name", "age"],
+        "additionalProperties": false
+      },
+      "targetSchema": { "$ref": "#" },
+      "config": {
+        "path": "user[post]"
+      }
+    },
+    {
+      "title": "Update",
+      "description": "Update a user",
+      "href": "/user/{#/properties/id}",
+      "method": "PUT",
+      "rel": "update",
+      "schema": { "$ref": "#" },
+      "targetSchema": { "$ref": "#" },
+      "config": {
+        "path": "user[put]"
+      }
+    },
+    {
+      "title": "Update details",
+      "description": "Update a users' details",
+      "href": "/user/{#/properties/id}/details",
+      "method": "PATCH",
+      "rel": "updateDetails",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": { "$ref": "#/properties/name" },
+          "age": { "$ref": "#/properties/age" }
+        },
+        "required": ["name", "age"],
+        "additionalProperties": false
+      },
+      "targetSchema": { "$ref": "#" }
+    },
+    {
+      "id": "updateShippingAddress",
+      "title": "Update shipping address",
+      "description": "Update a users' shipping address.",
+      "href": "/user/{#/properties/id}/shipTo",
+      "method": "PATCH",
+      "rel": "updateShippingAddress",
+      "schema": { "$ref": "#/properties/shipTo" },
+      "targetSchema": { "$ref": "#" }
+    },
+    {
+      "description": "Info for existing user",
+      "href": "/user/{#/properties/id}",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info",
+      "targetSchema": { "$ref": "#" },
+      "config": {
+        "path": "user[get]"
+      }
+    },
+    {
+      "description": "Delete an existing user",
+      "href": "/user/{#/properties/id}",
+      "method": "DELETE",
+      "rel": "self",
+      "title": "Delete",
+      "targetSchema": { "$ref": "#/properties/id" },
+      "config": {
+        "path": "user[delete]"
+      }
+    }
+  ],
+  "additionalProperties": {
+    "_id": { "$ref": "./common/id.json" }
+  },
+  "properties": {
+    "id": { "$ref": "./common/id.json" },
+    "name": {
+      "type": "string",
+      "example": "User name"
+    },
+    "age": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 130,
+      "example": 27
+    },
+    "shipTo": { "$ref": "./common/address.json" },
+    "billTo": { "$ref": "./common/address.json" }
+  },
+  "required": ["id", "name", "age"]
+}

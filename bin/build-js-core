@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mkdir -p server/public/build/js
+browserify -r react -r react-tap-event-plugin -r react-dom -r material-ui > server/public/build/js/core.js
