@@ -1,7 +1,7 @@
 module.exports = [{
   paths: ['client/**/*.js', 'client/**/*.html'],
   on: {
-    all: ['npm run build:js']
+    all: ['npm run build:app:js']
   }
 }, {
   paths: ['client/**/*.scss'],

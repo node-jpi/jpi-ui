@@ -1,3 +1,9 @@
 #!/bin/bash
 
-node-sass --output-style=expanded --output=server/public/build/css client
+#node-sass --output-style=expanded --output=server/public/build/css client
+
+node-sass \
+   --output-style=expanded \
+   --include-path=client/surface-1.01/src/scss \
+   --output=server/public/build/css \
+   client/index.scss

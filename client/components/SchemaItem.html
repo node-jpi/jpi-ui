@@ -1,0 +1,51 @@
+<script>
+  const self = this
+</script>
+<if condition="data.kind === 'group'">
+  <h1 class="title">{data.label}</h1>
+  <h2 class="subtitle">Subtitle</h2>
+  <p class="control" each="element, element.name in data.elements">
+    <script>
+      description.call(this, element)
+    </script>
+  </p>
+<elseif condition="data.kind === 'field'">
+  <if condition="data.controlType === 'input'">
+    <if condition="data.type === 'integer' || data.type === 'number'">
+      <label class="label" for="{data.dataObjectPath}">{data.label}</label>
+      <input
+        id="{data.dataObjectPath}"
+        key=123
+        type="number"
+        value="{this.getValue(data.dataObjectPath)}"
+        onchange="{self.setValue(data.dataObjectPath, +this.value)}"
+        class="input is-hovered xis-small"
+        name="{data.dataObjectPath}"
+        placeholder="{data.label}"
+        title="{data.tooltip}"
+        required="{data.required ? 'required' : null}">
+    <else>
+      <label class="label" for="{data.dataObjectPath}">{data.label}</label>
+      <input
+        id="{data.dataObjectPath}"
+        value="{this.getValue(data.dataObjectPath)}"
+        onchange="{self.setValue(data.dataObjectPath, this.value)}"
+        key=1213
+        class="input is-hovered xis-small"
+        name="{data.dataObjectPath}"
+        placeholder="{data.label}"
+        title="{data.tooltip}"
+        required="{data.required ? 'required' : null}">
+    </if>    
+  <elseif condition="data.controlType === 'yesno'">
+    <label class="checkbox">
+    <input 
+      key=1233
+      type="checkbox"
+      checked="{this.getValue(data.dataObjectPath)}"
+      onchange="{self.setValue(data.dataObjectPath, this.checked)}"
+      name="{data.dataObjectPath}"
+      title="{data.tooltip}">
+      {data.label}</label>
+  </if>
+</if>

@@ -13,6 +13,18 @@ module.exports = {
       return reply(result)
     })
   },
+  findTweets (request, reply) {
+    const db = request.db
+    const id = request.params.id
+
+    db.tweet.find({ userId: id }).toArray(function (err, result) {
+      if (err) {
+        return reply(Boom.badRequest('Find failed', err))
+      }
+
+      return reply(result)
+    })
+  },
   get (request, reply) {
     const db = request.db
     const id = request.params.id
@@ -22,7 +34,7 @@ module.exports = {
         return reply(Boom.badRequest('Get failed', err))
       }
       if (!result || result.length !== 1) {
-        return reply(Boom.notFound('Get failed', err))
+        return reply(Boom.notFound('Get failed', new Error(`[${id}] not found`)))
       }
 
       return reply(result[0])
@@ -37,7 +49,7 @@ module.exports = {
         return reply(Boom.badRequest('Post failed', err))
       }
       if (!result) {
-        return reply(Boom.notFound('Post failed', err))
+        return reply(Boom.notFound('Post failed', new Error('Failed to create item')))
       }
 
       return reply(result[0])
@@ -51,13 +63,13 @@ module.exports = {
       if (err) {
         return reply(Boom.badRequest('Put failed', err))
       }
-      if (!doc) {
-        return reply(Boom.notFound('Put failed', err))
+      if (!doc[0]) {
+        return reply(Boom.notFound('Put failed', new Error(`[${id}] not found`)))
       }
-      reply(doc)
+      reply(doc[0])
     })
   },
-  patch (request, reply) {
+  updateDetails (request, reply) {
     const db = request.db
     const id = request.params.id
 
@@ -66,21 +78,50 @@ module.exports = {
         return reply(Boom.badRequest('Patch failed', err))
       }
       if (!result || result.length !== 1) {
-        return reply(Boom.notFound('Patch failed', err))
+        return reply(Boom.notFound('Update Details failed', new Error(`[${id}] not found`)))
       }
 
       // patch obj
       result = result[0]
       Object.assign(result, request.payload)
 
-      db.updateOne({ id: id }, result, function (err, doc) {
+      db.user.updateOne({ id: id }, result, function (err, doc) {
         if (err) {
-          return reply(Boom.badRequest('Patch failed', err))
+          return reply(Boom.badRequest('Update Details failed', err))
         }
         if (!doc) {
-          return reply(Boom.notFound('Patch failed', err))
+          return reply(Boom.notFound('Update Details failed', new Error(`[${id}] not found`)))
         }
-        reply(doc)
+
+        reply(doc[0])
+      })
+    })
+  },
+  updateShippingAddress (request, reply) {
+    const db = request.db
+    const id = request.params.id
+
+    db.user.find({ id: id }).toArray(function (err, result) {
+      if (err) {
+        return reply(Boom.badRequest('Patch failed', err))
+      }
+      if (!result || result.length !== 1) {
+        return reply(Boom.notFound('Update Shipping Address failed', new Error(`[${id}] not found`)))
+      }
+
+      // patch obj
+      result = result[0]
+      result.shipTo = request.payload
+
+      db.user.updateOne({ id: id }, result, function (err, doc) {
+        if (err) {
+          return reply(Boom.badRequest('Update Shipping Address failed', err))
+        }
+        if (!doc) {
+          return reply(Boom.notFound('Update Shipping Address failed', new Error(`[${id}] not found`)))
+        }
+
+        reply(doc[0])
       })
     })
   },

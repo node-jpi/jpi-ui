@@ -100,8 +100,9 @@ const manifest = {
       plugin: {
         register: 'jpi-hapi-json-schema',
         options: {
-          makeHandler: function (file, schema, link) {
-            return makeHandler(file, schema, link, Path.resolve(__dirname, './routes/api'))
+          prepareRouteOptions: function (options, file, schema, link) {
+            const handler = makeHandler(file, schema, link, Path.resolve(__dirname, './routes/api'))
+            options.config.handler = handler
           },
           schema: Path.resolve(__dirname, 'public/schema/*.json')
         }

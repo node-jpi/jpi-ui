@@ -1,0 +1,123 @@
+{
+  "id": "tweet",
+  "type": "object",
+  "title": "Tweet",
+  "description": "Tweet API Hyperschema",
+  "definitions": {
+    "orderBy": {
+      "type": "string",
+      "description": "Order by query",
+      "example": "price",
+      "enum": ["price", "distance", "postage"]
+    }
+  },
+  "links": [
+    {
+      "description": "List tweets",
+      "href": "/tweet",
+      "method": "GET",
+      "rel": "instances",
+      "title": "List",
+      "targetSchema": {
+        "items": {
+          "$ref": "#"
+        },
+        "type": "array"
+      },
+      "config": {
+        "path": "tweet[find]"
+      }
+    },
+    {
+      "title": "Create",
+      "description": "Create a new tweet",
+      "href": "/tweet",
+      "method": "POST",
+      "rel": "create",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "body": { "$ref": "#/properties/body" },
+          "date": { "$ref": "#/properties/date" },
+          "userId": { "$ref": "#/properties/userId" }
+        },
+        "required": ["body", "date"],
+        "additionalProperties": false
+      },
+      "targetSchema": { "$ref": "#" },
+      "config": {
+        "path": "tweet[post]"
+      }
+    },
+    {
+      "title": "Update",
+      "description": "Update a tweet",
+      "href": "/tweet/{#/properties/id}",
+      "method": "PUT",
+      "rel": "update",
+      "schema": { "$ref": "#" },
+      "targetSchema": { "$ref": "#" },
+      "config": {
+        "path": "tweet[put]"
+      }
+    },
+    {
+      "description": "Info for existing tweet",
+      "href": "/tweet/{#/properties/id}",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info",
+      "targetSchema": { "$ref": "#" },
+      "config": {
+        "path": "tweet[get]"
+      }
+    },
+    {
+      "description": "User for tweet",
+      "href": "/tweet/{#/properties/id}/user",
+      "method": "GET",
+      "rel": "self",
+      "title": "Info",
+      "targetSchema": { "$ref": "./user.json" },
+      "config": {
+        "path": "tweet[getUser]"
+      }
+    },
+    {
+      "description": "Delete an existing tweet",
+      "href": "/tweet/{#/properties/id}",
+      "method": "DELETE",
+      "rel": "self",
+      "title": "Delete",
+      "targetSchema": { "$ref": "#/properties/id" },
+      "config": {
+        "path": "tweet[delete]"
+      }
+    }
+  ],
+  "additionalProperties": {
+    "_id": { "$ref": "./common/id.json" }
+  },
+  "properties": {
+    "id": { "$ref": "./common/id.json" },
+    "userId": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User id",
+      "description": "The user id of the tweet"
+    },
+    "body": {
+      "type": "string",
+      "title": "Body",
+      "description": "The tweet's body",
+      "example": "Tweet body"
+    },
+    "date": {
+      "type": "integer",
+      "minimum": 0,
+      "title": "Date",
+      "description": "The tweet's date"
+    }
+  },
+  "required": ["id", "userId", "body", "date"]
+}

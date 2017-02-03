@@ -50,7 +50,7 @@ function createDb (schema) {
     }))
   }
 
-  db.insertMany(samples)
+  // db.insertMany(samples)
   return db
 }
 

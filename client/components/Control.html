@@ -1,0 +1,89 @@
+<div if="this.state.loaded">
+  <script>
+    const displayProps = this.getDisplayProps()
+    const displayLinks = this.controls.links
+    const displayActions = this.controls.actions
+    const onSubmit = this.onSubmit.bind(this)
+    const onClickStaticLink = this.onClickStaticLink.bind(this)
+    const onClickActionLink = this.onClickActionLink.bind(this)
+    const onClickDisplayLink = this.onClickDisplayLink.bind(this)
+    const onClickCloseModal = this.onClickCloseModal.bind(this)
+  </script>
+  <h3>{this.schema.title}</h3>
+  <h4>{this.schema.description}</h4>
+  <div if="this.state.showModal" class="modal is-active">
+    <div class="modal-background"></div>
+    <if condition="this.form">
+      <form class="modal-card" onsubmit="{onSubmit($event)}">
+        <header class="modal-card-head">
+          <p class="modal-card-title">{this.form.link.title}</p>
+          <button class="delete" onclick="{onClickCloseModal($event)}"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="columns">
+            <div class="column is-two-thirds">
+              <x-schema skip form={this.form}></x-schema>
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" type="submit">Save</button>
+        </footer>
+      </form>
+    <elseif condition="this.doc">
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">{this.doc.id}</p>
+          <button class="delete" onclick="{onClickCloseModal($event)}"></button>
+        </header>
+        <section class="modal-card-body">
+          <pre>{JSON.stringify(this.doc, null, 2)}</pre>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" onclick="{onClickCloseModal($event)}">Close</button>
+        </footer>
+      </div>
+    </if>
+  </div>
+  <a
+    each="link, link.method + link.href in this.controls.staticControls"
+    href="{link.href}"
+    title={link.description}
+    onclick="{onClickStaticLink($event, link)}">{link.title}</a>
+  <div if="this.data">
+    <table class="table">
+      <thead>
+        <tr>
+          <th each="prop, prop in displayProps">{displayProps[prop].title}</th>
+          <!--<th each="action, action.method + action.href in displayActions"></th>-->
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr each="item, item.id in this.data" key={item.id}>
+          <td each="prop, prop in displayProps">
+            <if condition="typeof item[prop] === 'boolean'">
+              <input type="checkbox" disabled checked="{item[prop] ? 'checked': null}">
+            <else>
+              {item[prop] || ''}
+            </if>
+          </td>
+          <td>
+            <ul class="menu">
+              <li><a href="#"><i class="fa fa-caret-square-o-down"></a>
+                <ul class="menu-list card">
+                  <li each="action, action.method + action.href in displayActions">
+                    <a onclick="{onClickActionLink($event, action, item)}" href="{this.getHref(action, item)}" title={action.description}>{action.title}</a>
+                  </li>
+                  <li each="link, link.method + link.href in displayLinks">
+                    <a onclick="{onClickDisplayLink($event, link, item)}" href="{this.getHref(link, item)}" title={link.description}>{link.title}</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

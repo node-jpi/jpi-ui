@@ -1,8 +1,8 @@
 {
   "id": "user",
   "type": "object",
-  "title": "User API Hyperschema",
-  "description": "User API description",
+  "title": "User",
+  "description": "User API Hyperschema",
   "definitions": {
     "orderBy": {
       "type": "string",
@@ -29,6 +29,22 @@
       }
     },
     {
+      "description": "List users' tweets",
+      "href": "/user/{#/properties/id}/tweets",
+      "method": "GET",
+      "rel": "instances",
+      "title": "List tweets",
+      "targetSchema": {
+        "items": {
+          "$ref": "./tweet.json"
+        },
+        "type": "array"
+      },
+      "config": {
+        "path": "user[findTweets]"
+      }
+    },
+    {
       "title": "Create",
       "description": "Create a new user",
       "href": "/user",
@@ -38,9 +54,10 @@
         "type": "object",
         "properties": {
           "name": { "$ref": "#/properties/name" },
-          "age": { "$ref": "#/properties/age" }
+          "age": { "$ref": "#/properties/age" },
+          "isProtected": { "$ref": "#/properties/isProtected" }
         },
-        "required": ["name", "age"],
+        "required": ["name", "age", "isProtected"],
         "additionalProperties": false
       },
       "targetSchema": { "$ref": "#" },
@@ -61,6 +78,7 @@
       }
     },
     {
+      "id": "updateDetails",
       "title": "Update details",
       "description": "Update a users' details",
       "href": "/user/{#/properties/id}/details",
@@ -70,12 +88,16 @@
         "type": "object",
         "properties": {
           "name": { "$ref": "#/properties/name" },
-          "age": { "$ref": "#/properties/age" }
+          "age": { "$ref": "#/properties/age" },
+          "isProtected": { "$ref": "#/properties/isProtected" }
         },
-        "required": ["name", "age"],
+        "required": ["name", "age", "isProtected"],
         "additionalProperties": false
       },
-      "targetSchema": { "$ref": "#" }
+      "targetSchema": { "$ref": "#" },
+      "config": {
+        "path": "user[updateDetails]"
+      }
     },
     {
       "id": "updateShippingAddress",
@@ -85,7 +107,10 @@
       "method": "PATCH",
       "rel": "updateShippingAddress",
       "schema": { "$ref": "#/properties/shipTo" },
-      "targetSchema": { "$ref": "#" }
+      "targetSchema": { "$ref": "#" },
+      "config": {
+        "path": "user[updateShippingAddress]"
+      }
     },
     {
       "description": "Info for existing user",
@@ -117,13 +142,23 @@
     "id": { "$ref": "./common/id.json" },
     "name": {
       "type": "string",
+      "title": "Name",
+      "description": "The user's name",
       "example": "User name"
     },
     "age": {
       "type": "integer",
       "minimum": 0,
       "maximum": 130,
+      "title": "Age",
+      "description": "The user's age",
       "example": 27
+    },
+    "isProtected": {
+      "type": "boolean",
+      "title": "Is Protected",
+      "description": "Whether the user is protected or not",
+      "example": false
     },
     "shipTo": { "$ref": "./common/address.json" },
     "billTo": { "$ref": "./common/address.json" }
