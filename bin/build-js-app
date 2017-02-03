@@ -2,5 +2,4 @@
 
 mkdir -p server/public/build/js
 browserify client/main.js -t superviewify -t -d | exorcist server/public/build/js/app.js.map > server/public/build/js/app.js
-# [ babelify --presets [ es2015 ] ] 
 #-x react -x react-dom -x react-tap-event-plugin -x material-ui -t 

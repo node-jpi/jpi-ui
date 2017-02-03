@@ -87,8 +87,8 @@ lab.experiment('`User` resource tests', function () {
 
     server.select('api').inject(options, function (response) {
       Code.expect(response.statusCode).to.equal(200)
-      Code.expect(response.result).to.be.an.array().and.have.length(1)
-      const result = response.result[0]
+      Code.expect(response.result).to.be.an.object()
+      const result = response.result
       Code.expect(result.age).to.equal(payload.age)
       Code.expect(result.name).to.equal(payload.name)
 
@@ -171,12 +171,14 @@ lab.experiment('`User` resource tests', function () {
 
     server.select('api').inject(options, function (response) {
       Code.expect(response.statusCode).to.equal(400)
-      Code.expect(response.result.details).to.be.an.array().and.have.length(2)
+      Code.expect(response.result.details).to.be.an.array().and.have.length(3)
       Code.expect(response.result.message).to.exist().and.equal('Validation Error - Payload')
       Code.expect(response.result.details[0].field).to.exist().and.equal('data.name')
       Code.expect(response.result.details[0].message).to.exist().and.equal('is required')
       Code.expect(response.result.details[1].field).to.exist().and.equal('data.age')
       Code.expect(response.result.details[1].message).to.exist().and.equal('is required')
+      Code.expect(response.result.details[2].field).to.exist().and.equal('data.isProtected')
+      Code.expect(response.result.details[2].message).to.exist().and.equal('is required')
       done()
     })
   })
@@ -188,6 +190,7 @@ lab.experiment('`User` resource tests', function () {
       url: '/user',
       payload: {
         name: 'valid name',
+        isProtected: true,
         age: 1234 // max is 120
       }
     }
