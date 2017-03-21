@@ -1,8 +1,3 @@
-<script>
-  const onClickResource = this.onClickResource.bind(this)
-  const onClickNavToggle = this.onClickNavToggle.bind(this)
-  const onClickNavTab = this.onClickNavTab.bind(this)
-</script>
 <nav class="nav">
   <div class="nav-left">
     <a class="nav-item">
@@ -25,7 +20,7 @@
 
   <!-- This "nav-toggle" hamburger menu is only visible on mobile -->
   <!-- You need JavaScript to toggle the "is-active" class on "nav-menu" -->
-  <span class="nav-toggle" onclick={onClickNavToggle()}>
+  <span class="nav-toggle" onclick={ctrl.onClickNavToggle()}>
     <span></span>
     <span></span>
     <span></span>
@@ -33,7 +28,7 @@
 
   <!-- This "nav-menu" is hidden on mobile -->
   <!-- Add the modifier "is-active" to display it on mobile -->
-  <div class="{'nav-right nav-menu' + (this.state.isNavActive ? ' is-active' : '')}">
+  <div class="{'nav-right nav-menu' + (state.isNavActive ? ' is-active' : '')}">
     <a class="nav-item">
       Home
     </a>
@@ -45,54 +40,54 @@
     </a>
     <!--<h2 class="title is-5">API</h2>-->
     <a
-      if="this.state.loaded"
+      if="state.isLoaded"
       href="#"
       class="nav-item"
-      each="schema, schema.id in this.schemas"
-      onclick="{onClickResource($event, schema)}"
+      each="schema, schema.id in props.schemas"
+      onclick="{ctrl.onClickResource($event, schema)}"
       title={schema.description}>{schema.title}</a>
   </div>
-
 </nav>
 <section class="section">
-    <div class="container">
-      <div class="columns">
-        <div class="column is-3">
-          <aside class="menu">
-            <p class="menu-label">
-              API
-            </p>
-            <ul class="menu-list">
-              <li>
-                <a
-                  if="this.state.loaded"
-                  href="#"
-                  each="schema, schema.id in this.schemas"
-                  onclick="{onClickResource($event, schema)}"
-                  title={schema.description}>{schema.title}</a>
+  <div class="container">
+    <div class="columns">
+      <div class="column is-3">
+        <aside class="menu">
+          <p class="menu-label">
+            API
+          </p>
+          <ul class="menu-list">
+            <li>
+              <a
+                if="state.isLoaded"
+                href="#"
+                each="schema, schema.id in props.schemas"
+                onclick="{ctrl.onClickResource($event, schema)}"
+                title={schema.description}>{schema.title}</a>
+            </li>
+          </ul>
+        </aside>
+      </div>
+      <div if="state.isLoaded" class="column">
+        <main if="state.schemas.length">
+          <div class="tabs">
+            <ul>
+              <li 
+                each="schema in state.schemas"
+                class="{ctrl.findSchema(schema).id === state.activeSchemaId ? 'is-active' : ''}">
+                <a onclick="{ctrl.onClickNavTab($event, schema)}">{ctrl.findSchema(schema).title}</a>
               </li>
             </ul>
-          </aside>
-        </div>
-        <div class="column">
-          <main if="this.state.schemas.length">
-            <div class="tabs">
-              <ul>
-                <li 
-                  class="{this.findSchema(schema).id === this.state.activeSchemaId ? 'is-active' : ''}"
-                  each="schema in this.state.schemas">
-                  <a onclick="{onClickNavTab($event, schema)}">{this.findSchema(schema).title}</a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <x-control
-                skip
-                hidden="{this.findSchema(schema).id !== this.state.activeSchemaId ? 'hidden' : null}"
-                each="schema in this.state.schemas" schema={this.findSchema(schema)}></x-control>
-            </div>
-          </main>
-        </div>
+          </div>
+          <div>
+            <x-schema
+              skip
+              each="schema in state.schemas" schema="{ctrl.findSchema(schema)}"
+              hidden="{ctrl.findSchema(schema).id !== state.activeSchemaId ? 'hidden' : null}">
+            </x-schema>
+          </div>
+        </main>
       </div>
     </div>
-  </section>
+  </div>
+</section>

@@ -1,5 +1,86 @@
-<div>
+<div if="props.schema">
   <script>
-    this.itemView(this.model)
+    const schema = props.schema
+    const controls = ctrl.getControls()
+    const displayProps = ctrl.getDisplayProps()
+    const displayLinks = controls.links
+    const displayActions = controls.actions
   </script>
+  <h3>{schema.title}</h3>
+  <h4>{schema.description}</h4>
+  <div if="state.showModal" class="modal is-active">
+    <div class="modal-background"></div>
+    <if condition="ctrl.form">
+      <form class="modal-card" onsubmit="{ctrl.onSubmit($event)}">
+        <header class="modal-card-head">
+          <p class="modal-card-title">{ctrl.form.link.title}</p>
+          <button class="delete" onclick="{ctrl.onClickCloseModal($event)}"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="columns">
+            <div class="column is-two-thirds">
+              <x-form skip form="{ctrl.form}"></x-form>
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" type="submit">Save</button>
+        </footer>
+      </form>
+    <elseif condition="ctrl.doc">
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">{ctrl.doc.id}</p>
+          <button class="delete" onclick="{ctrl.onClickCloseModal($event)}"></button>
+        </header>
+        <section class="modal-card-body">
+          <pre>{JSON.stringify(ctrl.doc, null, 2)}</pre>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" onclick="{ctrl.onClickCloseModal($event)}">Close</button>
+        </footer>
+      </div>
+    </if>
+  </div>
+  <a
+    each="link, link.method + link.href in controls.staticControls"
+    href="{link.href}"
+    title={link.description}
+    onclick="{ctrl.onClickStaticLink($event, link)}">{link.title}</a>
+  <div if="ctrl.data">
+    <table class="table">
+      <thead>
+        <tr>
+          <th each="prop, prop in displayProps">{displayProps[prop].title}</th>
+          <!--<th each="action, action.method + action.href in displayActions"></th>-->
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr each="item, item.id in ctrl.data" key={item.id}>
+          <td each="prop, prop in displayProps">
+            <if condition="typeof item[prop] === 'boolean'">
+              <input type="checkbox" disabled checked="{item[prop] ? 'checked': null}">
+            <else>
+              {item[prop] || ''}
+            </if>
+          </td>
+          <td>
+            <ul class="menu">
+              <li><a href="#"><i class="fa fa-caret-square-o-down"></a>
+                <ul class="menu-list card">
+                  <li each="action, action.method + action.href in controls.actions">
+                    <a onclick="{ctrl.onClickActionLink($event, action, item)}" href="{ctrl.getHref(action, item)}" title={action.description}>{action.title}</a>
+                  </li>
+                  <li each="link, link.method + link.href in controls.links">
+                    <a onclick="{ctrl.onClickDisplayLink($event, link, item)}" href="{ctrl.getHref(link, item)}" title={link.description}>{link.title}</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

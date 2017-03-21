@@ -1,5 +1,5 @@
 #!/bin/bash
 
 mkdir -p server/public/build/js
-watchify -v -o server/public/build/js/app.js client/main.js -t superviewify -t -d | exorcist server/public/build/js/app.js.map
+watchify -v -o server/public/build/js/app.js client/index.js -t [superviewify --args 'ctrl state props'] -t -d | exorcist server/public/build/js/app.js.map
 #-x react -x react-dom -x material-ui 
